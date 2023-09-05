@@ -49,12 +49,21 @@ async function run() {
     })
 
     // order
+
+    app.get('/ordertoys', async(req, res)=>{
+      const cursor = orderCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
     app.post('/ordertoys', async(req, res)=>{
       const order = req.body;
       console.log(order);
       const result = await orderCollection.insertOne(order);
       res.send(result)
   })
+
+
 
   
 
