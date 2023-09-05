@@ -13,7 +13,7 @@ const alltoys = require('./Data/toys.json')
 console.log(process.env.DB_USER)
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion,ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.z8idv4x.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -31,12 +31,32 @@ async function run() {
     await client.connect();
 
     const toyCollection = client.db('AnimeToys').collection('alltoys');
+    const orderCollection = client.db('AnimeToys').collection('ordertoys');
 
     app.get('/alltoys', async(req, res)=>{
       const cursor = toyCollection.find();
       const result = await cursor.toArray();
       res.send(result);
+    })
+
+    app.get('/alltoys/:id', async(req, res)=>{
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id)};
+    
+
+    const result = await toyCollection.findOne(query);
+    res.send(result);
+    })
+
+    // order
+    app.post('/ordertoys', async(req, res)=>{
+      const order = req.body;
+      console.log(order);
+      const result = await orderCollection.insertOne(order);
+      res.send(result)
   })
+
+  
 
 
 
@@ -54,16 +74,6 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
   res.send('Toys server is runnig')
 })
-
-// app.get('/alltoys', (req, res) =>{
-// res.send(alltoys);
-// })
-
-app.get('/alltoys/:id', (req, res) =>{
-    const id = req.params.id;
-    const selectedToys = alltoys.find(alltoy =>alltoy._id == id);
-  res.send(selectedToys);
-    })
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`)
