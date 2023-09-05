@@ -70,19 +70,19 @@ async function run() {
     })
 
 
-    app.patch('/ordertoys/:id', async(req, res)=>{
+    app.patch('/ordertoys/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = {_id: new ObjectId(id)};
+      const filter = { _id: new ObjectId(id) };
       const updatedOrder = req.body;
       console.log(updatedOrder);
       const updateDoc = {
-        $set: {
-            status: updatedOrder.status
-        }
+          $set: {
+              status: updatedOrder.status
+          },
       };
       const result = await orderCollection.updateOne(filter, updateDoc);
-      res.send(result)
-    })
+      res.send(result);
+  })
 
 
   app.delete('/ordertoys/:id', async(req, res)=>{
