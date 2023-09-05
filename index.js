@@ -51,7 +51,13 @@ async function run() {
     // order
 
     app.get('/ordertoys', async(req, res)=>{
-      const cursor = orderCollection.find();
+
+      let query = {};
+        if(req.query?.email){
+            query = {email: req.query.email}
+        }
+
+      const cursor = orderCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
     })
@@ -62,6 +68,15 @@ async function run() {
       const result = await orderCollection.insertOne(order);
       res.send(result)
   })
+
+
+  app.delete('/ordertoys/:id', async(req, res)=>{
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id)}
+    const result = await orderCollection.deleteOne(query);
+    res.send(result);
+
+})
 
 
 
