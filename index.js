@@ -48,6 +48,14 @@ async function run() {
     res.send(result);
     })
 
+    app.post('/alltoys', async(req, res)=>{
+      const newToy = req.body;
+      console.log(newToy);
+      const result = await toyCollection.insertOne(newToy);
+      res.send(result)
+  })
+
+
     // order
 
     app.get('/ordertoys', async(req, res)=>{
